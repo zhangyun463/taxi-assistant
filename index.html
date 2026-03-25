@@ -3,450 +3,494 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>出租车转型助手 - 智能问答 | 网约车转出租车一站式顾问</title>
+    <title>出租车转型助手 · 极速换电版</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
+
         body {
+            background: linear-gradient(145deg, #f0f7f0 0%, #e9f0e6 100%);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: #f0f2f5;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            padding: 20px 16px 40px;
+            min-height: 100vh;
         }
-        /* 头部 - 微信绿 + 渐变质感 */
-        .header {
-            background: linear-gradient(135deg, #07c160 0%, #06ae56 100%);
-            color: white;
-            padding: 16px 20px;
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* 头部 */
+        .hero {
             text-align: center;
-            font-weight: 700;
-            font-size: 1.35rem;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 28px;
         }
-        .header small {
-            font-size: 0.7rem;
-            font-weight: normal;
-            opacity: 0.9;
-            display: block;
-            margin-top: 4px;
-            letter-spacing: 0.3px;
-        }
-        /* 聊天区域 - 优雅滚动 */
-        .chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 18px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            background: #f5f7fb;
-            scroll-behavior: smooth;
-        }
-        /* 自定义滚动条 */
-        .chat-container::-webkit-scrollbar {
-            width: 5px;
-        }
-        .chat-container::-webkit-scrollbar-track {
-            background: #e9ecef;
-            border-radius: 10px;
-        }
-        .chat-container::-webkit-scrollbar-thumb {
-            background: #c0c4cc;
-            border-radius: 10px;
-        }
-        /* 消息气泡 */
-        .message {
-            max-width: 82%;
-            padding: 12px 16px;
-            border-radius: 22px;
-            font-size: 0.95rem;
-            line-height: 1.45;
-            word-break: break-word;
-            position: relative;
-            animation: fadeInUp 0.2s ease-out;
-        }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .user-msg {
-            align-self: flex-end;
-            background: #07c160;
-            color: white;
-            border-bottom-right-radius: 6px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .bot-msg {
-            align-self: flex-start;
-            background: white;
-            color: #1e2a3e;
-            border-bottom-left-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02);
-        }
-        /* 快捷按钮区 */
-        .quick-buttons {
-            background: #ffffff;
-            padding: 12px 12px 8px;
-            border-top: 1px solid #eef2f6;
-            display: flex;
+        .hero h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #07c160, #0f9d4e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
             gap: 10px;
+            letter-spacing: -0.3px;
+        }
+        .hero p {
+            color: #4a6741;
+            background: rgba(7,193,96,0.12);
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            backdrop-filter: blur(2px);
+        }
+
+        /* 三大类卡片 */
+        .categories-grid {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
             flex-wrap: wrap;
             justify-content: center;
         }
-        .quick-btn {
-            background: #f0f4f9;
+        .category-card {
+            flex: 1;
+            min-width: 160px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 36px;
+            padding: 20px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(7,193,96,0.25);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.03);
+        }
+        .category-card:active { transform: scale(0.97); background: white; }
+        .category-icon { font-size: 2.6rem; margin-bottom: 10px; }
+        .category-title { font-weight: 700; font-size: 1.2rem; color: #1c3e1c; margin-bottom: 6px; }
+        .category-desc { font-size: 0.7rem; color: #5e7560; }
+
+        /* 二级页面 */
+        .sub-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            background: white;
             border: none;
-            padding: 8px 18px;
+            padding: 8px 20px;
             border-radius: 40px;
             font-size: 0.85rem;
             font-weight: 500;
             color: #07c160;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.02);
-        }
-        .quick-btn:active {
-            background: #e2e8f0;
-            transform: scale(0.96);
-        }
-        /* 输入区 */
-        .input-area {
-            background: white;
-            padding: 10px 14px;
-            display: flex;
-            gap: 12px;
-            border-top: 1px solid #eef2f6;
-            align-items: center;
-        }
-        .input-area input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 1px solid #e2e8f0;
-            border-radius: 32px;
-            font-size: 0.9rem;
-            outline: none;
-            background: #fefefe;
-            font-family: inherit;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             transition: 0.2s;
-        }
-        .input-area input:focus {
-            border-color: #07c160;
-            box-shadow: 0 0 0 2px rgba(7,193,96,0.2);
-        }
-        .input-area button {
-            background: #07c160;
-            border: none;
-            color: white;
-            padding: 0 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.9rem;
-            height: 46px;
-            transition: 0.2s;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        .input-area button:active {
-            background: #059e4c;
-            transform: scale(0.97);
-        }
-        /* 联系我们区域 精致卡片风格 */
-        .contact-bar {
-            background: #ffffff;
-            padding: 12px 16px;
-            border-top: 1px solid #eef2f6;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #2c3e50;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 16px;
-        }
-        .contact-item {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #f8fafc;
-            padding: 5px 12px;
-            border-radius: 40px;
         }
-        .contact-bar a {
+        .back-btn:active { background: #eef3ee; transform: scale(0.97); }
+        .sub-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        .sub-card {
+            background: white;
+            border-radius: 28px;
+            padding: 18px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #e2f0e2;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+        }
+        .sub-card:active { transform: scale(0.97); background: #fafffa; }
+        .sub-icon { font-size: 2rem; margin-bottom: 8px; }
+        .sub-title { font-weight: 600; font-size: 0.95rem; color: #1f3b1f; margin-bottom: 4px; }
+        .sub-desc { font-size: 0.7rem; color: #7d8f7a; }
+
+        /* 模态框 */
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-content {
+            background: white;
+            width: 86%;
+            max-width: 380px;
+            border-radius: 44px;
+            padding: 24px 20px 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 40px rgba(0,0,0,0.2);
+        }
+        .modal-content h4 {
+            font-size: 1.4rem;
+            color: #07c160;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .modal-body p {
+            font-size: 0.9rem;
+            line-height: 1.45;
+            color: #2b3b2a;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+        .close-modal {
+            background: #eef3ee;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .form-group input {
+            padding: 12px 16px;
+            border: 1px solid #cfdfcf;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            background: #fefefe;
+        }
+        .form-group button {
+            background: #07c160;
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .record-item {
+            background: #f8faf6;
+            border-radius: 20px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #e0ecdf;
+        }
+        .export-btn {
+            background: #07c16020;
+            border: 1px solid #07c16060;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            color: #07c160;
+            cursor: pointer;
+            margin-top: 12px;
+            display: inline-block;
+        }
+        .hotline {
+            background: white;
+            border-radius: 60px;
+            padding: 12px 20px;
+            margin-top: 28px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #d9ecd9;
+        }
+        .hotline a {
             color: #07c160;
             text-decoration: none;
             font-weight: 600;
-            letter-spacing: 0.3px;
         }
-        .footer-note {
+        .footer {
             font-size: 0.6rem;
             text-align: center;
-            padding: 8px 10px;
-            color: #94a3b8;
-            background: #ffffff;
-            border-top: 1px solid #f0f2f6;
+            color: #8a9b86;
+            margin-top: 24px;
         }
-        /* 小提示微交互 */
-        .bot-msg a, .bot-msg strong {
-            color: #07c160;
-        }
-        @media (max-width: 480px) {
-            .message {
-                max-width: 88%;
-                font-size: 0.9rem;
-            }
-            .quick-btn {
-                padding: 6px 14px;
-                font-size: 0.8rem;
-            }
-        }
+        .hidden { display: none; }
+        input:focus { outline: none; border-color: #07c160; }
+        button { cursor: pointer; }
     </style>
 </head>
 <body>
-<div class="header">
-    🚕 出租车转型助手
-    <small>网约车转巡游出租车 | 收入·规费·路权·合规一站通</small>
+<div class="container">
+    <div class="hero">
+        <h1>🚖 出租车转型助手</h1>
+        <p>⚡ 全系极速换电 · 3分钟满电出发</p>
+    </div>
+
+    <!-- 一级：三大类 -->
+    <div id="categoriesView">
+        <div class="categories-grid">
+            <div class="category-card" data-cat="qa">
+                <div class="category-icon">💬</div>
+                <div class="category-title">智能问答·转型攻略</div>
+                <div class="category-desc">收入对比 · 规费路权 · 换电模式</div>
+            </div>
+            <div class="category-card" data-cat="price">
+                <div class="category-icon">🚕</div>
+                <div class="category-title">车型报价·一人一车</div>
+                <div class="category-desc">大枫叶 · 小枫叶 · 长安系列</div>
+            </div>
+            <div class="category-card" data-cat="register">
+                <div class="category-icon">📞</div>
+                <div class="category-title">极速报名·专属通道</div>
+                <div class="category-desc">在线留资 · 热线 · 管理后台</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 二级页面容器 -->
+    <div id="subView" class="hidden">
+        <div class="sub-header">
+            <button class="back-btn" id="backBtn">← 返回主菜单</button>
+        </div>
+        <div id="subGridContainer" class="sub-grid"></div>
+    </div>
+
+    <div class="hotline">
+        <span>📞 咨询专线：</span>
+        <span><a href="tel:13018306222">张老师 13018306222</a></span>
+        <span><a href="tel:13594880055">秦老师 13594880055</a></span>
+        <span style="font-size:0.7rem;">🏢 合作出租车公司服务中心</span>
+    </div>
+    <div class="footer">* 全系车型极速换电（3分钟满电）| 一人一车价格透明 | 管理后台密码保护</div>
 </div>
 
-<div class="chat-container" id="chatContainer">
-    <div class="message bot-msg">
-        👋 您好！我是您的专属出租车转型顾问。<br>
-        关于 <strong>收入对比、规费成本、一车双驾、路权优势、合规政策</strong> 等问题，随时问我～<br>
-        💬 试试输入“收入对比”、“规费多少”、“路权优势”或点击下方快捷按钮。
+<!-- 模态框 -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h4 id="modalTitle"></h4>
+        <div id="modalBody" class="modal-body"></div>
+        <button class="close-modal" id="closeModalBtn">关 闭</button>
     </div>
 </div>
 
-<div class="quick-buttons" id="quickBtns"></div>
-
-<div class="input-area">
-    <input type="text" id="questionInput" placeholder="输入关键词，例如：一车双驾、违章处理、抽成对比..." autocomplete="off">
-    <button id="sendBtn">发送 ➤</button>
-</div>
-
-<!-- 双通道联系栏 -->
-<div class="contact-bar">
-    <span>📞 咨询热线</span>
-    <div class="contact-item">张老师 <a href="tel:13018306222">13018306222</a></div>
-    <div class="contact-item">秦老师 <a href="tel:13594880055">13594880055</a></div>
-    <span style="font-size:0.7rem; color:#94a3b8;">（微信同号）</span>
-</div>
-
-<div class="footer-note">
-    ⚡ 本助手基于出租车转型常见FAQ智能回复，具体政策以公司最新文件为准 | 可预约线下体验
-</div>
-
 <script>
-    // ======================== 增强版知识库 ========================
-    // 涵盖网约车转出租车核心痛点：收入/成本/路权/合规/双驾/维修/违章/政策体验等
-    const qaData = [
-        {
-            keywords: ["收入", "对比", "赚钱", "月收入", "时薪", "多赚", "流水", "到手"],
-            answer: "📊 <strong>收入对比·真实数据</strong><br>✔ 网约车：平台抽成23%-30% + 车损自负 + 高隐性成本。<br>✔ 出租车：<strong>固定规费模式</strong>，每日缴完规费后流水全归自己，且拥有“扬招+网约”双渠道。<br>💰 同样劳动强度下，出租车司机月均收入普遍高出<strong>1500~3500元</strong>（含路招优势）。<br>📈 可提供后台流水对比表，详询热线获取专属收入测算。"
-        },
-        {
-            keywords: ["规费", "份子钱", "固定费用", "隐形扣费", "一口价", "每日成本"],
-            answer: "💰 <strong>规费（份子钱）透明解析</strong><br>规费即每日固定承包费，包含：车辆租金、全额保险、维修基金、GPS服务费、定期保养。✅ 无任何抽成！跑够规费后，每一单都是净收入。<br>🚕 当前主流新能源车型每日规费区间参考<strong>160元~220元</strong>（不同车型/承包方案略有浮动），具体方案可电话定制。比网约车租赁+抽成更稳定可控。"
-        },
-        {
-            keywords: ["一车双驾", "对班", "搭档", "分摊", "双班", "主副班"],
-            answer: "👥 <strong>一车双驾 · 成本减半</strong><br>允许主副班/对班搭档运营，白班夜班无缝衔接，车辆24小时高效运转，规费直接减半！公司可免费协助配对搭档司机，也可自行寻找。临时有事可找代班司机顶班，收入不断档。"
-        },
-        {
-            keywords: ["单量", "派单", "公平", "扬招", "网召", "客源", "空驶率"],
-            answer: "🚕 <strong>双渠道接单 · 客源王者</strong><br>✔ 扬招特权：路上招手乘客（商务客、游客、中老年群体）出租车独享。<br>✔ 网约平台：接入主流网约平台，仅收取极低信息服务费（约0.5-1元/单或0抽成）。<br>✔ 机场/火车站设有出租车专用上客区，即到即走。双渠道客源比纯网约车多30%以上，空驶率大幅降低。"
-        },
-        {
-            keywords: ["路权", "特权", "公交道", "机场", "火车站", "优先", "快速路"],
-            answer: "🛣️ <strong>路权优势 · 效率翻倍</strong><br>✅ 特定时段可合法行驶公交专用道，高峰时段快人一步。<br>✅ 机场、火车站、大型枢纽享有出租车专用通道/蓄车池，随到随走，网约车则需远端排队等候。<br>✅ 大型活动、交通管制期间，出租车优先放行，营运效率远超网约车。"
-        },
-        {
-            keywords: ["合规", "人证", "车证", "运管", "罚款", "查扣", "双证"],
-            answer: "✅ <strong>合规无忧·双证保障</strong><br>• 若已持有《网络预约出租汽车驾驶员证》，可自动增发巡游出租车资格证，无需重复考试。<br>• 未持证者，公司协助报名考试，通过后自动取得双证（网约+巡游）。<br>• 公司提供合规营运车辆（车证齐全），合法上路，无惧运管查扣，告别高额罚款风险。"
-        },
-        {
-            keywords: ["买车", "车辆维修", "保养", "修车", "车坏了", "轮胎", "折旧"],
-            answer: "🔧 <strong>0购车成本 · 维保全包</strong><br>无需自己买车，公司提供全新/准新合规营运车辆。常规维修、保养、年检、轮胎更换全部由公司承担！您只需负责日常车容卫生及小故障及时报修。彻底告别车辆折旧风险和大修费用，轻资产运营。"
-        },
-        {
-            keywords: ["充电", "加油", "电费", "能耗", "续航", "补电"],
-            answer: "⚡ <strong>新能源低能耗方案</strong><br>主推新能源出租车（电车），每公里能耗成本仅0.1~0.2元。公司签约多家协议充电站，享充电折扣价；部分场站提供换电/快速补电服务，减少排队耗时。燃油车方案也可选择，具体可咨询工作人员。"
-        },
-        {
-            keywords: ["事故", "违章", "保险", "理赔", "出险"],
-            answer: "🛡️ <strong>全险兜底·违章透明</strong><br>公司统一购买营运车辆全额保险（交强险+商业险100万+），事故理赔流程规范，专人协助处理。违章罚款由当班驾驶员依法承担，公司可协助查询及办理。相比私车营运保险可能拒赔，出租车保障体系成熟可靠。"
-        },
-        {
-            keywords: ["自由", "交车", "作息", "休息", "灵活性", "排班"],
-            answer: "⏰ <strong>灵活作息·多种模式可选</strong><br>✔ 传统对班：规律交接，作息稳定，疲劳驾驶风险低。<br>✔ 一人一车：独享车辆，时间完全自主（月租/季租灵活）。<br>✔ 代班模式：押金低，按班次结算，想开就开，时间超自由。<br>可根据个人节奏匹配最佳方案。"
-        },
-        {
-            keywords: ["考证", "资格证", "网约车证", "区域科目", "巡游证", "报名"],
-            answer: "📄 <strong>资格证快捷通道</strong><br>已持网约车驾驶员证 → 自动增驾巡游出租车资格，无需额外费用。<br>无证人员 → 公司协助统一报名，参加区域科目考试，快速拿双证。全程指导，通过率高。"
-        },
-        {
-            keywords: ["政策", "支持", "优惠", "体验", "签约", "代班", "一人一车", "转型"],
-            answer: "🎁 <strong>2025转型专项扶持政策</strong><br>① <strong>零风险体验</strong>：少量押金试开一个班次，当日流水全归自己，真实感受收入。<br>② <strong>一人一车</strong>：押金低至3000元起，租期灵活（1个月/3个月/半年/1年自由选）。<br>③ <strong>代班模式</strong>：按班次出车，无长期绑定，适合过渡期。<br>④ <strong>新司机安家礼包</strong>：前三月规费减免/充电补贴，名额有限，电话预约从速。"
-        },
-        {
-            keywords: ["风险", "试开", "体验班", "押金"],
-            answer: "🎯 <strong>零风险试驾体验</strong><br>缴纳少量履约押金即可申请试开一个完整班次（白班/夜班自选），当日跑多少流水都是自己的！真实感受运营强度、收入水平、车辆状态，满意再签正式合同。"
-        },
-        {
-            keywords: ["抽成", "平台费", "信息服务费", "滴滴抽成", "高德"],
-            answer: "📉 <strong>出租车抽成极低！</strong><br>通过网约平台接单，仅收取0.5~1元/单信息服务费，<strong>没有比例抽成</strong>。路招乘客收入100%归司机。相比网约车23%以上抽成，出租车每单多赚15%~25%。"
-        },
-        {
-            keywords: ["你好", "您好", "hi", "hello", "在吗", "谢谢", "感谢", "咨询", "请问"],
-            answer: "🌟 您好呀！我是您的智能转型顾问～ 有任何关于出租车收入、规费、路权、双驾、体验政策的问题，直接打字或点击上方快捷按钮即可。需要人工深度咨询请拨打下方老师电话📞，随时为您服务！"
-        },
-        {
-            keywords: ["对比网约车", "网约车好还是出租车", "选择哪个", "哪个划算"],
-            answer: "🚖 <strong>出租车 VS 网约车 核心优势</strong><br>✔ 收入更稳：无抽成+路招溢价+规费封顶<br>✔ 成本可控：维修/保险/车损由公司承担<br>✔ 路权优先：公交道/枢纽专用道效率高<br>✔ 合法双证：合规无忧，风险最低。<br>综合比较，出租车长期收入潜力更大，抗风险能力更强。"
-        }
+    // ---------- 智能问答数据 ----------
+    const qaList = [
+        { title: "💰 收入对比", desc: "月均多赚1500~3000元", content: "📊 网约车抽成23%-30%，车损自负；出租车规费固定，跑够份子钱后流水全归自己。\n✅ 同样流水，出租车每日多赚100元以上，月增3000元。\n🎯 双渠道（扬招+网约）客源更稳，可提供后台流水对比。" },
+        { title: "💰 规费/份子钱", desc: "固定成本，无抽成", content: "规费即每日固定费用（含租金、维修基金、保险、GPS等），无任何抽成。公司统一承担常规维修、保养、年检、轮胎，司机专注营运，成本更可控。" },
+        { title: "🛣️ 路权优势", desc: "公交道·优先通道", content: "出租车专属路权：可走公交专用道，机场/火车站专用通道，随到随走，大型活动优先通行。比网约车每日多接3-5单，效率大幅提升。" },
+        { title: "👥 一车双驾", desc: "对班分摊规费", content: "支持主副班/对班运营，找搭档分摊规费，白班夜班轮换，成本直接减半。公司可协助配对搭档，也可代班灵活顶替。" },
+        { title: "✅ 合规无忧", desc: "人证车证双保险", content: "已持《网络预约出租汽车驾驶员证》自动增加巡游资格证，未持证者公司协助报考，双证合规上路，告别罚款风险。" },
+        { title: "🔧 维修保养", desc: "公司全包，无需操心", content: "公司提供合规营运车辆，常规维修、保养、年检、轮胎全包。不用承担车辆折旧和大修费用，每年节省上万元。" },
+        { title: "⚡ 极速换电", desc: "3分钟满电，高效营运", content: "全系车型采用先进换电模式，进站3分钟完成电池更换，满电出发，无需等待充电。彻底告别充电排队，每日多接3-5单，运营效率提升20%。" },
+        { title: "🛡️ 事故违章", desc: "全额保险+协助处理", content: "公司统一购买营运车辆全额保险，理赔规范；违章罚款由当班驾驶员承担，公司协助处理，保障更稳妥。" },
+        { title: "📄 考证指南", desc: "资格证增项快速", content: "网约车驾驶员证自动增项巡游车资格证，无需重考。新手协助报名，最快一周拿证上岗，轻松转型。" },
+        { title: "🎁 零风险体验", desc: "试开一个班，流水归你", content: "交少量押金试开一个班（白/夜班），期间流水全归自己，真实体验收入与模式。试开后可自由决定是否签约，无强制绑定。" },
+        { title: "📋 灵活政策", desc: "一人一车·代班·对班", content: "①零风险体验；②一人一车（1年/半年/3个月/1个月租期自定）；③代班模式（班次自选）。推广所有合作出租车公司车辆，选择丰富。" }
     ];
 
-    // 增强问答匹配函数 (支持更智能的匹配，优先精准匹配)
-    function getAnswer(question) {
-        if (!question.trim()) return "💬 请输入您想咨询的问题，例如：“收入对比”、“规费明细”或“如何体验”～";
-        const lowerQ = question.toLowerCase().trim();
-        
-        // 遍历知识库，按顺序匹配（优先匹配更精准的业务关键词）
-        for (let item of qaData) {
-            for (let kw of item.keywords) {
-                if (lowerQ.includes(kw.toLowerCase())) {
-                    return item.answer;
+    // 车型报价（仅一人一车价格）
+    const priceList = [
+        { title: "大枫叶80V", desc: "一人一车 101元/天起", content: "🚗 大枫叶80V 一人一车价格：\n🔹 101元/天（不包修理）\n🔹 116元/天（含维修保养）\n⚡ 支持极速换电，3分钟满电，全天高效运营，价格透明无其他利润点。" },
+        { title: "小枫叶60S", desc: "一人一车 150元/天", content: "🚙 小枫叶60S 一人一车价格：150元/天\n🎯 车身灵巧，极速换电便捷，维保全包，一人一车长租更划算。" },
+        { title: "长安460 / 520", desc: "一人一车 120~170元/天", content: "🚖 长安460：一人一车120元/天\n🚖 长安520：一人一车170元/天\n✨ 空间宽裕，支持极速换电，3分钟满电出发，公司负责维修保养。" }
+    ];
+
+    // 报名相关子项
+    const registerList = [
+        { id: "form", title: "📝 在线报名", desc: "填写信息 锁定试驾", type: "form", content: "立即预约零风险试跑，顾问2小时内联系。" },
+        { id: "hotline", title: "📞 热线咨询", desc: "1对1人工解答", content: "📞 张老师：13018306222（微信同号）\n📞 秦老师：13594880055\n🏢 现场咨询：合作出租车公司服务中心，一对一讲解收入模型、搭档推荐。" },
+        { id: "admin", title: "🔐 管理后台", desc: "报名记录管理（需密码）", type: "admin", content: "" }
+    ];
+
+    // ----- 存储与记录 -----
+    function saveLead(name, phone) {
+        let leads = JSON.parse(localStorage.getItem('taxi_leads') || '[]');
+        leads.push({ name, phone, time: new Date().toLocaleString(), ts: Date.now() });
+        localStorage.setItem('taxi_leads', JSON.stringify(leads));
+    }
+    function getLeads() { return JSON.parse(localStorage.getItem('taxi_leads') || '[]'); }
+
+    // 显示报名记录面板（密码验证）
+    function showAdminPanel() {
+        const modalEl = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBodyDiv = document.getElementById('modalBody');
+        modalTitle.innerText = '🔐 管理后台验证';
+        modalBodyDiv.innerHTML = `
+            <p style="text-align:center;">请输入管理密码查看报名记录</p>
+            <input type="password" id="adminPwd" style="width:100%; padding:12px; border-radius:60px; border:1px solid #cfdfcf; margin:12px 0;" placeholder="管理密码">
+            <div style="display:flex; justify-content:center;">
+                <button id="pwdConfirmBtn" style="background:#07c160; border:none; color:white; padding:10px 20px; border-radius:40px;">验证并查看</button>
+            </div>
+            <p style="font-size:0.7rem; text-align:center; margin-top:12px;">密码由管理员保管</p>
+        `;
+        modalEl.classList.add('active');
+        document.getElementById('pwdConfirmBtn')?.addEventListener('click', () => {
+            const pwd = document.getElementById('adminPwd')?.value;
+            if (pwd === 'cqyqwl1022') {
+                // 验证成功，关闭当前弹窗，显示记录
+                modalEl.classList.remove('active');
+                const leads = getLeads();
+                let html = `<div style="max-height:50vh; overflow-y:auto;">`;
+                if (leads.length === 0) html += `<p style="text-align:center;">暂无报名记录</p>`;
+                else {
+                    leads.forEach((l, idx) => {
+                        html += `<div class="record-item"><strong>${idx+1}. ${l.name}</strong> &nbsp; ${l.phone}<br><span style="font-size:0.65rem;">${l.time}</span></div>`;
+                    });
+                    html += `<div style="text-align:center; margin-top:12px;"><button id="exportCsvBtn" class="export-btn">📎 导出CSV</button></div>`;
                 }
+                html += `</div><p style="font-size:0.7rem; margin-top:12px;">* 数据本地存储，请定期导出备份。</p>`;
+                modalTitle.innerText = '📋 报名记录管理';
+                modalBodyDiv.innerHTML = html;
+                modalEl.classList.add('active');
+                const exportBtn = document.getElementById('exportCsvBtn');
+                if (exportBtn) {
+                    exportBtn.onclick = () => {
+                        const data = getLeads();
+                        if (!data.length) { alert("无记录"); return; }
+                        let csv = "姓名,手机号,报名时间\n";
+                        data.forEach(l => { csv += `"${l.name}","${l.phone}","${l.time}"\n`; });
+                        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = "出租车报名记录.csv";
+                        link.click();
+                        URL.revokeObjectURL(link.href);
+                    };
+                }
+            } else {
+                alert("密码错误，无法查看管理后台");
             }
-        }
-        // 未匹配到通用兜底回复，附上热门引导
-        return "❓ 暂时没捕捉到精准答案，您可尝试点击上方“收入对比”、“路权优势”或“体验政策”按钮获取标准解答。也可以直接拨打咨询热线📞，专业老师一对一解答。";
-    }
-
-    // DOM 元素
-    const chatContainer = document.getElementById('chatContainer');
-    const questionInput = document.getElementById('questionInput');
-    const sendBtn = document.getElementById('sendBtn');
-
-    // 添加消息并滚动到底部
-    function addMessage(content, isUser) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${isUser ? 'user-msg' : 'bot-msg'}`;
-        // 支持换行和部分加粗样式
-        msgDiv.innerHTML = content.replace(/\n/g, '<br>');
-        chatContainer.appendChild(msgDiv);
-        // 平滑滚动
-        msgDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
-
-    // 显示“正在输入”效果（轻量提升体验）
-    let typingTimeout = null;
-    function showTypingAndAnswer(questionText) {
-        // 显示临时“正在输入”指示器
-        const typingDiv = document.createElement('div');
-        typingDiv.className = 'message bot-msg';
-        typingDiv.id = 'typingIndicator';
-        typingDiv.style.padding = '8px 16px';
-        typingDiv.style.fontStyle = 'italic';
-        typingDiv.style.opacity = '0.7';
-        typingDiv.innerHTML = '✍️ 正在思考中...';
-        chatContainer.appendChild(typingDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        
-        // 模拟短时延迟（使交互更自然），0.2~0.4秒
-        setTimeout(() => {
-            const indicator = document.getElementById('typingIndicator');
-            if (indicator) indicator.remove();
-            const answer = getAnswer(questionText);
-            addMessage(answer, false);
-        }, 180);
-    }
-
-    // 处理用户提问核心逻辑
-    function handleQuestion(questionText) {
-        const rawText = questionText.trim();
-        if (!rawText) return;
-        // 添加用户消息
-        addMessage(rawText, true);
-        // 显示机器人思考+回答
-        showTypingAndAnswer(rawText);
-        // 清空输入框
-        questionInput.value = '';
-    }
-
-    // 快捷按钮列表（覆盖高热度话题）
-    function initQuickButtons() {
-        const quickContainer = document.getElementById('quickBtns');
-        const quickList = [
-            "收入对比", "规费多少", "一车双驾", "路权优势",
-            "合规风险", "维修保养", "事故违章", "双证怎么考",
-            "体验政策", "抽成对比"
-        ];
-        quickList.forEach(label => {
-            const btn = document.createElement('button');
-            btn.innerText = label;
-            btn.className = 'quick-btn';
-            btn.addEventListener('click', () => {
-                handleQuestion(label);
-            });
-            quickContainer.appendChild(btn);
         });
     }
 
-    // 发送按钮与回车事件
-    sendBtn.addEventListener('click', () => {
-        const val = questionInput.value.trim();
-        if (val) handleQuestion(val);
-    });
-    questionInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const val = questionInput.value.trim();
-            if (val) handleQuestion(val);
+    // 通用模态框显示文本
+    function showTextModal(title, text) {
+        const modalEl = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBodyDiv = document.getElementById('modalBody');
+        modalTitle.innerText = title;
+        modalBodyDiv.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`;
+        modalEl.classList.add('active');
+    }
+
+    // 在线报名表单模态框
+    function showFormModal() {
+        const modalEl = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBodyDiv = document.getElementById('modalBody');
+        modalTitle.innerText = '📋 立即报名转型';
+        modalBodyDiv.innerHTML = `
+            <p style="text-align:center;">预约零风险试跑，顾问2小时内联系</p>
+            <div class="form-group">
+                <input type="text" id="regName" placeholder="您的姓名" autocomplete="name">
+                <input type="tel" id="regPhone" placeholder="手机号码" autocomplete="tel">
+                <button id="submitRegBtn">提交预约 · 锁定试驾</button>
+            </div>
+            <p style="font-size:0.7rem;">提交后专属顾问致电，安排体验</p>
+        `;
+        modalEl.classList.add('active');
+        const submitBtn = document.getElementById('submitRegBtn');
+        if (submitBtn) {
+            submitBtn.onclick = () => {
+                const name = document.getElementById('regName')?.value.trim();
+                const phone = document.getElementById('regPhone')?.value.trim();
+                if (!name) { alert('请填写姓名'); return; }
+                if (!phone || !/^1[0-9]{10}$/.test(phone)) { alert('请填写正确手机号'); return; }
+                saveLead(name, phone);
+                alert(`✅ ${name}老师，报名成功！顾问将致电${phone}，安排体验。`);
+                modalEl.classList.remove('active');
+            };
         }
-    });
+    }
 
-    // 初始化所有快捷按钮
-    initQuickButtons();
+    // 渲染二级页面
+    let currentCategory = '';
+    function renderSub(category) {
+        const container = document.getElementById('subGridContainer');
+        container.innerHTML = '';
+        let items = [];
+        if (category === 'qa') items = qaList;
+        else if (category === 'price') items = priceList;
+        else if (category === 'register') items = registerList;
 
-    // 附加贴心功能：初次加载完成后，如果聊天区只有欢迎语，不额外干扰，保留原有内容
-    // 但如果用户重新进入，可以保持清爽，不做额外操作。
-    // 可选：为手机号增加复制提示（轻提醒）
-    const telLinks = document.querySelectorAll('.contact-bar a[href^="tel"]');
-    telLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            // 纯粹保留拨号，无需额外逻辑，但增加用户体验反馈（不做打断）
-            console.log('拨号咨询');
-        });
-    });
-
-    // 微调布局：确保输入框不因键盘被完全遮挡（移动端）
-    const inputArea = document.querySelector('.input-area');
-    const chatArea = document.querySelector('.chat-container');
-    if (window.innerWidth <= 768) {
-        // 监听focus滚动
-        const inputElem = document.getElementById('questionInput');
-        inputElem.addEventListener('focus', () => {
-            setTimeout(() => {
-                if (chatArea.lastElementChild) {
-                    chatArea.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'sub-card';
+            const icon = item.title.split(' ')[0] || '📌';
+            card.innerHTML = `
+                <div class="sub-icon">${icon}</div>
+                <div class="sub-title">${item.title}</div>
+                <div class="sub-desc">${item.desc}</div>
+            `;
+            card.addEventListener('click', () => {
+                if (category === 'register') {
+                    if (item.type === 'form') showFormModal();
+                    else if (item.type === 'admin') showAdminPanel();
+                    else showTextModal(item.title, item.content);
+                } else {
+                    showTextModal(item.title, item.content);
                 }
-            }, 300);
+            });
+            container.appendChild(card);
         });
     }
+
+    // 切换视图
+    const categoriesDiv = document.getElementById('categoriesView');
+    const subViewDiv = document.getElementById('subView');
+    const backBtn = document.getElementById('backBtn');
+
+    function showSub(cat) {
+        currentCategory = cat;
+        categoriesDiv.classList.add('hidden');
+        subViewDiv.classList.remove('hidden');
+        renderSub(cat);
+    }
+    function showCategories() {
+        categoriesDiv.classList.remove('hidden');
+        subViewDiv.classList.add('hidden');
+        currentCategory = '';
+    }
+
+    // 绑定大类点击
+    document.querySelectorAll('.category-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            const cat = card.getAttribute('data-cat');
+            if (cat) showSub(cat);
+        });
+    });
+    backBtn.addEventListener('click', showCategories);
+
+    // 模态框关闭
+    const modalEl = document.getElementById('modal');
+    const closeModal = document.getElementById('closeModalBtn');
+    closeModal.addEventListener('click', () => modalEl.classList.remove('active'));
+    modalEl.addEventListener('click', (e) => { if (e.target === modalEl) modalEl.classList.remove('active'); });
+
+    // 初始化localStorage
+    if (!localStorage.getItem('taxi_leads')) localStorage.setItem('taxi_leads', '[]');
 </script>
 </body>
 </html>
