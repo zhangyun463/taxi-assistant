@@ -9,12 +9,13 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background: linear-gradient(145deg, #f0f7f0 0%, #e9f0e6 100%);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            padding: 20px 16px 40px;
+            padding: 16px 12px 40px;
             min-height: 100vh;
         }
 
@@ -26,69 +27,68 @@
         /* 头部 */
         .hero {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
         .hero h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             background: linear-gradient(135deg, #07c160, #0f9d4e);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             letter-spacing: -0.3px;
         }
         .hero p {
             color: #4a6741;
             background: rgba(7,193,96,0.12);
             display: inline-block;
-            padding: 6px 18px;
+            padding: 5px 14px;
             border-radius: 40px;
-            font-size: 0.8rem;
-            margin-top: 10px;
+            font-size: 0.75rem;
+            margin-top: 8px;
             backdrop-filter: blur(2px);
         }
 
         /* 三大类卡片 */
         .categories-grid {
             display: flex;
-            gap: 16px;
-            margin-bottom: 32px;
+            gap: 12px;
+            margin-bottom: 28px;
             flex-wrap: wrap;
             justify-content: center;
         }
         .category-card {
             flex: 1;
-            min-width: 160px;
+            min-width: 105px;
             background: rgba(255,255,255,0.92);
             backdrop-filter: blur(2px);
-            border-radius: 36px;
-            padding: 20px 12px;
+            border-radius: 32px;
+            padding: 16px 8px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
             border: 1px solid rgba(7,193,96,0.25);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.03);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.02);
         }
-        .category-card:active { transform: scale(0.97); background: white; }
-        .category-icon { font-size: 2.6rem; margin-bottom: 10px; }
-        .category-title { font-weight: 700; font-size: 1.2rem; color: #1c3e1c; margin-bottom: 6px; }
-        .category-desc { font-size: 0.7rem; color: #5e7560; }
+        .category-card:active { transform: scale(0.96); background: white; }
+        .category-icon { font-size: 2.2rem; margin-bottom: 8px; }
+        .category-title { font-weight: 700; font-size: 1rem; color: #1c3e1c; margin-bottom: 4px; }
+        .category-desc { font-size: 0.65rem; color: #5e7560; }
 
         /* 二级页面 */
         .sub-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         .back-btn {
             background: white;
             border: none;
-            padding: 8px 20px;
+            padding: 8px 18px;
             border-radius: 40px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: #07c160;
             cursor: pointer;
@@ -102,12 +102,12 @@
         .sub-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
+            gap: 12px;
         }
         .sub-card {
             background: white;
-            border-radius: 28px;
-            padding: 18px 10px;
+            border-radius: 26px;
+            padding: 16px 8px;
             text-align: center;
             cursor: pointer;
             transition: 0.2s;
@@ -115,9 +115,9 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.02);
         }
         .sub-card:active { transform: scale(0.97); background: #fafffa; }
-        .sub-icon { font-size: 2rem; margin-bottom: 8px; }
-        .sub-title { font-weight: 600; font-size: 0.95rem; color: #1f3b1f; margin-bottom: 4px; }
-        .sub-desc { font-size: 0.7rem; color: #7d8f7a; }
+        .sub-icon { font-size: 1.8rem; margin-bottom: 6px; }
+        .sub-title { font-weight: 600; font-size: 0.9rem; color: #1f3b1f; margin-bottom: 4px; }
+        .sub-desc { font-size: 0.68rem; color: #7d8f7a; }
 
         /* 模态框 */
         .modal {
@@ -142,14 +142,14 @@
             background: white;
             width: 86%;
             max-width: 380px;
-            border-radius: 44px;
-            padding: 24px 20px 20px;
+            border-radius: 40px;
+            padding: 22px 18px 18px;
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 30px 40px rgba(0,0,0,0.2);
         }
         .modal-content h4 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: #07c160;
             margin-bottom: 12px;
             text-align: center;
@@ -159,7 +159,7 @@
             line-height: 1.45;
             color: #2b3b2a;
             white-space: pre-wrap;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .close-modal {
             background: #eef3ee;
@@ -215,13 +215,14 @@
         .hotline {
             background: white;
             border-radius: 60px;
-            padding: 12px 20px;
+            padding: 10px 16px;
             margin-top: 28px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px;
             border: 1px solid #d9ecd9;
+            font-size: 0.75rem;
         }
         .hotline a {
             color: #07c160;
@@ -232,7 +233,7 @@
             font-size: 0.6rem;
             text-align: center;
             color: #8a9b86;
-            margin-top: 24px;
+            margin-top: 20px;
         }
         .hidden { display: none; }
         input:focus { outline: none; border-color: #07c160; }
@@ -251,18 +252,18 @@
         <div class="categories-grid">
             <div class="category-card" data-cat="qa">
                 <div class="category-icon">💬</div>
-                <div class="category-title">智能问答·转型攻略</div>
-                <div class="category-desc">收入对比 · 规费路权 · 换电模式</div>
+                <div class="category-title">智能问答</div>
+                <div class="category-desc">收入·规费·路权·换电</div>
             </div>
             <div class="category-card" data-cat="price">
                 <div class="category-icon">🚕</div>
-                <div class="category-title">车型报价·一人一车</div>
-                <div class="category-desc">大枫叶 · 小枫叶 · 长安系列</div>
+                <div class="category-title">车型报价</div>
+                <div class="category-desc">一人一车·透明一口价</div>
             </div>
             <div class="category-card" data-cat="register">
                 <div class="category-icon">📞</div>
-                <div class="category-title">极速报名·专属通道</div>
-                <div class="category-desc">在线留资 · 热线 · 管理后台</div>
+                <div class="category-title">极速报名</div>
+                <div class="category-desc">在线留资·热线·管理</div>
             </div>
         </div>
     </div>
@@ -279,9 +280,9 @@
         <span>📞 咨询专线：</span>
         <span><a href="tel:13018306222">张老师 13018306222</a></span>
         <span><a href="tel:13594880055">秦老师 13594880055</a></span>
-        <span style="font-size:0.7rem;">🏢 合作出租车公司服务中心</span>
+        <span style="font-size:0.7rem;">🏢 合作出租车公司</span>
     </div>
-    <div class="footer">* 全系车型极速换电（3分钟满电）| 一人一车价格透明 | 管理后台密码保护</div>
+    <div class="footer">* 全系极速换电（3分钟满电）| 一人一车价格透明 | 管理后台密码保护</div>
 </div>
 
 <!-- 模态框 -->
@@ -309,11 +310,12 @@
         { title: "📋 灵活政策", desc: "一人一车·代班·对班", content: "①零风险体验；②一人一车（1年/半年/3个月/1个月租期自定）；③代班模式（班次自选）。推广所有合作出租车公司车辆，选择丰富。" }
     ];
 
-    // 车型报价（仅一人一车价格）
+    // 车型报价（一人一车价格，长安460与长安520分开）
     const priceList = [
         { title: "大枫叶80V", desc: "一人一车 101元/天起", content: "🚗 大枫叶80V 一人一车价格：\n🔹 101元/天（不包修理）\n🔹 116元/天（含维修保养）\n⚡ 支持极速换电，3分钟满电，全天高效运营，价格透明无其他利润点。" },
         { title: "小枫叶60S", desc: "一人一车 150元/天", content: "🚙 小枫叶60S 一人一车价格：150元/天\n🎯 车身灵巧，极速换电便捷，维保全包，一人一车长租更划算。" },
-        { title: "长安460 / 520", desc: "一人一车 120~170元/天", content: "🚖 长安460：一人一车120元/天\n🚖 长安520：一人一车170元/天\n✨ 空间宽裕，支持极速换电，3分钟满电出发，公司负责维修保养。" }
+        { title: "长安460", desc: "一人一车 120元/天", content: "🚖 长安460 一人一车价格：120元/天\n✨ 空间宽裕，支持极速换电，3分钟满电出发，公司负责维修保养，营运省心。" },
+        { title: "长安520", desc: "一人一车 170元/天", content: "🚖 长安520 一人一车价格：170元/天\n✨ 空间宽裕，动力充沛，极速换电3分钟满电，公司统一维保，无后顾之忧。" }
     ];
 
     // 报名相关子项
@@ -349,7 +351,6 @@
         document.getElementById('pwdConfirmBtn')?.addEventListener('click', () => {
             const pwd = document.getElementById('adminPwd')?.value;
             if (pwd === 'cqyqwl1022') {
-                // 验证成功，关闭当前弹窗，显示记录
                 modalEl.classList.remove('active');
                 const leads = getLeads();
                 let html = `<div style="max-height:50vh; overflow-y:auto;">`;
