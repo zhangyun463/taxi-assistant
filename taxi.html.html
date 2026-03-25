@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>出租车转型助手 - 智能问答 | 网约车转出租车一站式顾问</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        /* 头部 - 微信绿 + 渐变质感 */
+        .header {
+            background: linear-gradient(135deg, #07c160 0%, #06ae56 100%);
+            color: white;
+            padding: 16px 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.35rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .header small {
+            font-size: 0.7rem;
+            font-weight: normal;
+            opacity: 0.9;
+            display: block;
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+        /* 聊天区域 - 优雅滚动 */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            background: #f5f7fb;
+            scroll-behavior: smooth;
+        }
+        /* 自定义滚动条 */
+        .chat-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chat-container::-webkit-scrollbar-track {
+            background: #e9ecef;
+            border-radius: 10px;
+        }
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #c0c4cc;
+            border-radius: 10px;
+        }
+        /* 消息气泡 */
+        .message {
+            max-width: 82%;
+            padding: 12px 16px;
+            border-radius: 22px;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            word-break: break-word;
+            position: relative;
+            animation: fadeInUp 0.2s ease-out;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .user-msg {
+            align-self: flex-end;
+            background: #07c160;
+            color: white;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .bot-msg {
+            align-self: flex-start;
+            background: white;
+            color: #1e2a3e;
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02);
+        }
+        /* 快捷按钮区 */
+        .quick-buttons {
+            background: #ffffff;
+            padding: 12px 12px 8px;
+            border-top: 1px solid #eef2f6;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .quick-btn {
+            background: #f0f4f9;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #07c160;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.02);
+        }
+        .quick-btn:active {
+            background: #e2e8f0;
+            transform: scale(0.96);
+        }
+        /* 输入区 */
+        .input-area {
+            background: white;
+            padding: 10px 14px;
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid #eef2f6;
+            align-items: center;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 32px;
+            font-size: 0.9rem;
+            outline: none;
+            background: #fefefe;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        .input-area input:focus {
+            border-color: #07c160;
+            box-shadow: 0 0 0 2px rgba(7,193,96,0.2);
+        }
+        .input-area button {
+            background: #07c160;
+            border: none;
+            color: white;
+            padding: 0 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            height: 46px;
+            transition: 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .input-area button:active {
+            background: #059e4c;
+            transform: scale(0.97);
+        }
+        /* 联系我们区域 精致卡片风格 */
+        .contact-bar {
+            background: #ffffff;
+            padding: 12px 16px;
+            border-top: 1px solid #eef2f6;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #2c3e50;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+        .contact-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8fafc;
+            padding: 5px 12px;
+            border-radius: 40px;
+        }
+        .contact-bar a {
+            color: #07c160;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .footer-note {
+            font-size: 0.6rem;
+            text-align: center;
+            padding: 8px 10px;
+            color: #94a3b8;
+            background: #ffffff;
+            border-top: 1px solid #f0f2f6;
+        }
+        /* 小提示微交互 */
+        .bot-msg a, .bot-msg strong {
+            color: #07c160;
+        }
+        @media (max-width: 480px) {
+            .message {
+                max-width: 88%;
+                font-size: 0.9rem;
+            }
+            .quick-btn {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    🚕 出租车转型助手
+    <small>网约车转巡游出租车 | 收入·规费·路权·合规一站通</small>
+</div>
+
+<div class="chat-container" id="chatContainer">
+    <div class="message bot-msg">
+        👋 您好！我是您的专属出租车转型顾问。<br>
+        关于 <strong>收入对比、规费成本、一车双驾、路权优势、合规政策</strong> 等问题，随时问我～<br>
+        💬 试试输入“收入对比”、“规费多少”、“路权优势”或点击下方快捷按钮。
+    </div>
+</div>
+
+<div class="quick-buttons" id="quickBtns"></div>
+
+<div class="input-area">
+    <input type="text" id="questionInput" placeholder="输入关键词，例如：一车双驾、违章处理、抽成对比..." autocomplete="off">
+    <button id="sendBtn">发送 ➤</button>
+</div>
+
+<!-- 双通道联系栏 -->
+<div class="contact-bar">
+    <span>📞 咨询热线</span>
+    <div class="contact-item">张老师 <a href="tel:13018306222">13018306222</a></div>
+    <div class="contact-item">秦老师 <a href="tel:13594880055">13594880055</a></div>
+    <span style="font-size:0.7rem; color:#94a3b8;">（微信同号）</span>
+</div>
+
+<div class="footer-note">
+    ⚡ 本助手基于出租车转型常见FAQ智能回复，具体政策以公司最新文件为准 | 可预约线下体验
+</div>
+
+<script>
+    // ======================== 增强版知识库 ========================
+    // 涵盖网约车转出租车核心痛点：收入/成本/路权/合规/双驾/维修/违章/政策体验等
+    const qaData = [
+        {
+            keywords: ["收入", "对比", "赚钱", "月收入", "时薪", "多赚", "流水", "到手"],
+            answer: "📊 <strong>收入对比·真实数据</strong><br>✔ 网约车：平台抽成23%-30% + 车损自负 + 高隐性成本。<br>✔ 出租车：<strong>固定规费模式</strong>，每日缴完规费后流水全归自己，且拥有“扬招+网约”双渠道。<br>💰 同样劳动强度下，出租车司机月均收入普遍高出<strong>1500~3500元</strong>（含路招优势）。<br>📈 可提供后台流水对比表，详询热线获取专属收入测算。"
+        },
+        {
+            keywords: ["规费", "份子钱", "固定费用", "隐形扣费", "一口价", "每日成本"],
+            answer: "💰 <strong>规费（份子钱）透明解析</strong><br>规费即每日固定承包费，包含：车辆租金、全额保险、维修基金、GPS服务费、定期保养。✅ 无任何抽成！跑够规费后，每一单都是净收入。<br>🚕 当前主流新能源车型每日规费区间参考<strong>160元~220元</strong>（不同车型/承包方案略有浮动），具体方案可电话定制。比网约车租赁+抽成更稳定可控。"
+        },
+        {
+            keywords: ["一车双驾", "对班", "搭档", "分摊", "双班", "主副班"],
+            answer: "👥 <strong>一车双驾 · 成本减半</strong><br>允许主副班/对班搭档运营，白班夜班无缝衔接，车辆24小时高效运转，规费直接减半！公司可免费协助配对搭档司机，也可自行寻找。临时有事可找代班司机顶班，收入不断档。"
+        },
+        {
+            keywords: ["单量", "派单", "公平", "扬招", "网召", "客源", "空驶率"],
+            answer: "🚕 <strong>双渠道接单 · 客源王者</strong><br>✔ 扬招特权：路上招手乘客（商务客、游客、中老年群体）出租车独享。<br>✔ 网约平台：接入主流网约平台，仅收取极低信息服务费（约0.5-1元/单或0抽成）。<br>✔ 机场/火车站设有出租车专用上客区，即到即走。双渠道客源比纯网约车多30%以上，空驶率大幅降低。"
+        },
+        {
+            keywords: ["路权", "特权", "公交道", "机场", "火车站", "优先", "快速路"],
+            answer: "🛣️ <strong>路权优势 · 效率翻倍</strong><br>✅ 特定时段可合法行驶公交专用道，高峰时段快人一步。<br>✅ 机场、火车站、大型枢纽享有出租车专用通道/蓄车池，随到随走，网约车则需远端排队等候。<br>✅ 大型活动、交通管制期间，出租车优先放行，营运效率远超网约车。"
+        },
+        {
+            keywords: ["合规", "人证", "车证", "运管", "罚款", "查扣", "双证"],
+            answer: "✅ <strong>合规无忧·双证保障</strong><br>• 若已持有《网络预约出租汽车驾驶员证》，可自动增发巡游出租车资格证，无需重复考试。<br>• 未持证者，公司协助报名考试，通过后自动取得双证（网约+巡游）。<br>• 公司提供合规营运车辆（车证齐全），合法上路，无惧运管查扣，告别高额罚款风险。"
+        },
+        {
+            keywords: ["买车", "车辆维修", "保养", "修车", "车坏了", "轮胎", "折旧"],
+            answer: "🔧 <strong>0购车成本 · 维保全包</strong><br>无需自己买车，公司提供全新/准新合规营运车辆。常规维修、保养、年检、轮胎更换全部由公司承担！您只需负责日常车容卫生及小故障及时报修。彻底告别车辆折旧风险和大修费用，轻资产运营。"
+        },
+        {
+            keywords: ["充电", "加油", "电费", "能耗", "续航", "补电"],
+            answer: "⚡ <strong>新能源低能耗方案</strong><br>主推新能源出租车（电车），每公里能耗成本仅0.1~0.2元。公司签约多家协议充电站，享充电折扣价；部分场站提供换电/快速补电服务，减少排队耗时。燃油车方案也可选择，具体可咨询工作人员。"
+        },
+        {
+            keywords: ["事故", "违章", "保险", "理赔", "出险"],
+            answer: "🛡️ <strong>全险兜底·违章透明</strong><br>公司统一购买营运车辆全额保险（交强险+商业险100万+），事故理赔流程规范，专人协助处理。违章罚款由当班驾驶员依法承担，公司可协助查询及办理。相比私车营运保险可能拒赔，出租车保障体系成熟可靠。"
+        },
+        {
+            keywords: ["自由", "交车", "作息", "休息", "灵活性", "排班"],
+            answer: "⏰ <strong>灵活作息·多种模式可选</strong><br>✔ 传统对班：规律交接，作息稳定，疲劳驾驶风险低。<br>✔ 一人一车：独享车辆，时间完全自主（月租/季租灵活）。<br>✔ 代班模式：押金低，按班次结算，想开就开，时间超自由。<br>可根据个人节奏匹配最佳方案。"
+        },
+        {
+            keywords: ["考证", "资格证", "网约车证", "区域科目", "巡游证", "报名"],
+            answer: "📄 <strong>资格证快捷通道</strong><br>已持网约车驾驶员证 → 自动增驾巡游出租车资格，无需额外费用。<br>无证人员 → 公司协助统一报名，参加区域科目考试，快速拿双证。全程指导，通过率高。"
+        },
+        {
+            keywords: ["政策", "支持", "优惠", "体验", "签约", "代班", "一人一车", "转型"],
+            answer: "🎁 <strong>2025转型专项扶持政策</strong><br>① <strong>零风险体验</strong>：少量押金试开一个班次，当日流水全归自己，真实感受收入。<br>② <strong>一人一车</strong>：押金低至3000元起，租期灵活（1个月/3个月/半年/1年自由选）。<br>③ <strong>代班模式</strong>：按班次出车，无长期绑定，适合过渡期。<br>④ <strong>新司机安家礼包</strong>：前三月规费减免/充电补贴，名额有限，电话预约从速。"
+        },
+        {
+            keywords: ["风险", "试开", "体验班", "押金"],
+            answer: "🎯 <strong>零风险试驾体验</strong><br>缴纳少量履约押金即可申请试开一个完整班次（白班/夜班自选），当日跑多少流水都是自己的！真实感受运营强度、收入水平、车辆状态，满意再签正式合同。"
+        },
+        {
+            keywords: ["抽成", "平台费", "信息服务费", "滴滴抽成", "高德"],
+            answer: "📉 <strong>出租车抽成极低！</strong><br>通过网约平台接单，仅收取0.5~1元/单信息服务费，<strong>没有比例抽成</strong>。路招乘客收入100%归司机。相比网约车23%以上抽成，出租车每单多赚15%~25%。"
+        },
+        {
+            keywords: ["你好", "您好", "hi", "hello", "在吗", "谢谢", "感谢", "咨询", "请问"],
+            answer: "🌟 您好呀！我是您的智能转型顾问～ 有任何关于出租车收入、规费、路权、双驾、体验政策的问题，直接打字或点击上方快捷按钮即可。需要人工深度咨询请拨打下方老师电话📞，随时为您服务！"
+        },
+        {
+            keywords: ["对比网约车", "网约车好还是出租车", "选择哪个", "哪个划算"],
+            answer: "🚖 <strong>出租车 VS 网约车 核心优势</strong><br>✔ 收入更稳：无抽成+路招溢价+规费封顶<br>✔ 成本可控：维修/保险/车损由公司承担<br>✔ 路权优先：公交道/枢纽专用道效率高<br>✔ 合法双证：合规无忧，风险最低。<br>综合比较，出租车长期收入潜力更大，抗风险能力更强。"
+        }
+    ];
+
+    // 增强问答匹配函数 (支持更智能的匹配，优先精准匹配)
+    function getAnswer(question) {
+        if (!question.trim()) return "💬 请输入您想咨询的问题，例如：“收入对比”、“规费明细”或“如何体验”～";
+        const lowerQ = question.toLowerCase().trim();
+        
+        // 遍历知识库，按顺序匹配（优先匹配更精准的业务关键词）
+        for (let item of qaData) {
+            for (let kw of item.keywords) {
+                if (lowerQ.includes(kw.toLowerCase())) {
+                    return item.answer;
+                }
+            }
+        }
+        // 未匹配到通用兜底回复，附上热门引导
+        return "❓ 暂时没捕捉到精准答案，您可尝试点击上方“收入对比”、“路权优势”或“体验政策”按钮获取标准解答。也可以直接拨打咨询热线📞，专业老师一对一解答。";
+    }
+
+    // DOM 元素
+    const chatContainer = document.getElementById('chatContainer');
+    const questionInput = document.getElementById('questionInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // 添加消息并滚动到底部
+    function addMessage(content, isUser) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${isUser ? 'user-msg' : 'bot-msg'}`;
+        // 支持换行和部分加粗样式
+        msgDiv.innerHTML = content.replace(/\n/g, '<br>');
+        chatContainer.appendChild(msgDiv);
+        // 平滑滚动
+        msgDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+
+    // 显示“正在输入”效果（轻量提升体验）
+    let typingTimeout = null;
+    function showTypingAndAnswer(questionText) {
+        // 显示临时“正在输入”指示器
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-msg';
+        typingDiv.id = 'typingIndicator';
+        typingDiv.style.padding = '8px 16px';
+        typingDiv.style.fontStyle = 'italic';
+        typingDiv.style.opacity = '0.7';
+        typingDiv.innerHTML = '✍️ 正在思考中...';
+        chatContainer.appendChild(typingDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        
+        // 模拟短时延迟（使交互更自然），0.2~0.4秒
+        setTimeout(() => {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+            const answer = getAnswer(questionText);
+            addMessage(answer, false);
+        }, 180);
+    }
+
+    // 处理用户提问核心逻辑
+    function handleQuestion(questionText) {
+        const rawText = questionText.trim();
+        if (!rawText) return;
+        // 添加用户消息
+        addMessage(rawText, true);
+        // 显示机器人思考+回答
+        showTypingAndAnswer(rawText);
+        // 清空输入框
+        questionInput.value = '';
+    }
+
+    // 快捷按钮列表（覆盖高热度话题）
+    function initQuickButtons() {
+        const quickContainer = document.getElementById('quickBtns');
+        const quickList = [
+            "收入对比", "规费多少", "一车双驾", "路权优势",
+            "合规风险", "维修保养", "事故违章", "双证怎么考",
+            "体验政策", "抽成对比"
+        ];
+        quickList.forEach(label => {
+            const btn = document.createElement('button');
+            btn.innerText = label;
+            btn.className = 'quick-btn';
+            btn.addEventListener('click', () => {
+                handleQuestion(label);
+            });
+            quickContainer.appendChild(btn);
+        });
+    }
+
+    // 发送按钮与回车事件
+    sendBtn.addEventListener('click', () => {
+        const val = questionInput.value.trim();
+        if (val) handleQuestion(val);
+    });
+    questionInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const val = questionInput.value.trim();
+            if (val) handleQuestion(val);
+        }
+    });
+
+    // 初始化所有快捷按钮
+    initQuickButtons();
+
+    // 附加贴心功能：初次加载完成后，如果聊天区只有欢迎语，不额外干扰，保留原有内容
+    // 但如果用户重新进入，可以保持清爽，不做额外操作。
+    // 可选：为手机号增加复制提示（轻提醒）
+    const telLinks = document.querySelectorAll('.contact-bar a[href^="tel"]');
+    telLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            // 纯粹保留拨号，无需额外逻辑，但增加用户体验反馈（不做打断）
+            console.log('拨号咨询');
+        });
+    });
+
+    // 微调布局：确保输入框不因键盘被完全遮挡（移动端）
+    const inputArea = document.querySelector('.input-area');
+    const chatArea = document.querySelector('.chat-container');
+    if (window.innerWidth <= 768) {
+        // 监听focus滚动
+        const inputElem = document.getElementById('questionInput');
+        inputElem.addEventListener('focus', () => {
+            setTimeout(() => {
+                if (chatArea.lastElementChild) {
+                    chatArea.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 300);
+        });
+    }
+</script>
+</body>
+</html>
